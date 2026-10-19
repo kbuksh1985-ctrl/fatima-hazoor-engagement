@@ -164,7 +164,7 @@ section.s{padding:64px 26px;text-align:center;position:relative}
 .bar{position:fixed;bottom:14px;left:50%;transform:translateX(-50%) translateY(120px);z-index:20;display:flex;gap:10px;
   transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 .bar.show{transform:translateX(-50%)}
-.pill{padding:10px 18px;border-radius:30px;background:rgba(255,250,252,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+.pill{white-space:nowrap;padding:10px 18px;border-radius:30px;background:rgba(255,250,252,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   color:var(--rose-deep);font-family:var(--serif);font-weight:600;font-size:14px;text-decoration:none;box-shadow:0 6px 18px rgba(60,20,40,.2);border:1px solid #f0d3de;cursor:pointer}
 .pill.solid{background:var(--rose-deep);color:#fff;border-color:var(--rose-deep)}
 /* sparkle trail */
@@ -212,6 +212,56 @@ section.s{padding:64px 26px;text-align:center;position:relative}
 .mk-row span{flex:1;font-size:16px}
 .mk-row a,.mk-row button{font-family:var(--serif);font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1px solid var(--rose-deep);background:#fff;color:var(--rose-deep);cursor:pointer;text-decoration:none}
 #confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:60}
+
+/* ============ ONE SCREEN PER PAGE (phone fit) ============ */
+html{scroll-snap-type:y mandatory}
+.hero,section.s{min-height:100vh;min-height:100svh;scroll-snap-align:start;scroll-snap-stop:always;
+  display:flex;flex-direction:column;justify-content:center}
+section.s{padding:clamp(22px,5svh,56px) 22px}
+.hero{padding:clamp(40px,8svh,70px) 22px clamp(70px,11svh,90px)}
+.s-title{font-size:clamp(32px,5.4svh,44px);padding:0 40px;text-wrap:balance}
+.s-kicker{margin-bottom:clamp(10px,2.2svh,22px)}
+.ornament{margin:4px 0 10px}
+.verse{font-size:clamp(14px,2.1svh,17px);line-height:1.55}
+.scratch-note{margin-top:8px}
+.photo-card{width:min(330px,100%,40svh)}
+.countdown{margin-top:14px}
+.timeline .t-item{margin-bottom:clamp(10px,2svh,22px);padding:12px 16px}
+.venue-card{padding:20px 18px}
+.closing{padding-bottom:clamp(22px,5svh,56px)}
+.closing .s-title{font-size:clamp(30px,4.8svh,42px)}
+.rsvp{margin-top:clamp(10px,2svh,22px);padding:16px}
+.rsvp label{margin:10px 0 5px}
+.rsvp input,.rsvp textarea{padding:8px 12px;font-size:16px}
+.rsvp textarea{min-height:0}
+.rsvp .btn{margin-top:12px}
+.guest-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.guest-row label{margin:0}
+.stepper button{width:34px;height:34px}
+.sign{font-size:26px;margin-top:10px}
+.closing.on-page ~ .bar, body.last .bar{transform:translateX(-50%) translateY(120px)}
+.music.share{top:66px;font-size:16px;display:flex}
+.music.share::after{display:none}
+body:not(.opened) .music.share{display:none}
+/* page dots */
+.dots{position:fixed;right:max(8px,calc(50% - 222px));top:50%;transform:translateY(-50%);z-index:25;display:none;flex-direction:column;gap:8px}
+body.opened .dots{display:flex}
+.dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:rgba(156,88,116,.35);cursor:pointer;transition:.3s}
+.dots button.on{background:var(--rose-deep);height:20px;border-radius:5px}
+/* short phones (e.g. iPhone SE, or with browser bars) */
+@media (max-height:720px){
+  .scratch-wrap{transform:scale(.82);margin:-20px auto -22px}
+  .ornament{display:none}
+  .verse small{margin-top:4px}
+  .countdown .cd{padding:10px 4px 8px}
+  .cd b{font-size:26px}
+  .dress{margin-top:10px}
+}
+@media (max-height:620px){
+  .scratch-wrap{transform:scale(.7);margin:-36px auto -38px}
+  .verse{font-size:13.5px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body class="locked">
@@ -326,9 +376,7 @@ section.s{padding:64px 26px;text-align:center;position:relative}
   <!-- CLOSING -->
   <section class="s closing">
     <div class="reveal">
-      <div class="heart-ico" style="color:var(--rose-deep);font-size:22px">♥</div>
       <div class="s-title">We can't wait to celebrate with you</div>
-      <p class="verse" style="margin-top:14px">Kindly let us know if you will be joining us.</p>
       <form class="rsvp" id="rsvp" novalidate>
         <label for="rName">Your name</label>
         <input id="rName" autocomplete="name" placeholder="e.g. Ali & Family">
@@ -338,23 +386,22 @@ section.s{padding:64px 26px;text-align:center;position:relative}
           <button type="button" class="chip sel" data-v="yes">Yes, InshaAllah</button>
           <button type="button" class="chip" data-v="no">Sorry, can't</button>
         </div>
-        <div id="rGuestWrap">
-          <label>Number of guests</label>
+        <div id="rGuestWrap" class="guest-row">
+          <label>Guests</label>
           <div class="stepper"><button type="button" id="rMinus" aria-label="Fewer guests">−</button><b id="rCount">1</b><button type="button" id="rPlus" aria-label="More guests">+</button></div>
         </div>
         <label for="rMsg">Wishes & duas for the couple</label>
-        <textarea id="rMsg" placeholder="Mubarak ho! May Allah bless you both…"></textarea>
+        <textarea id="rMsg" rows="2" placeholder="Mubarak ho! May Allah bless you both…"></textarea>
         <a class="btn solid" id="rSend" target="_blank" rel="noopener">💌 Send RSVP on WhatsApp</a>
       </form>
-      <div class="btns" style="margin-top:16px">
-        <button class="btn" type="button" id="shareBtn">🔗 Share invitation</button>
-      </div>
       <div class="sign" data-f="hosts"></div>
     </div>
   </section>
 </div>
 
 <button class="music" id="musicBtn" aria-label="Toggle music">♪</button>
+<button class="music share" id="shareBtn" aria-label="Share invitation">🔗</button>
+<nav class="dots" id="dots" aria-label="Pages"></nav>
 <div class="toast" id="toast"></div>
 
 <!-- GUEST LINK MAKER: open the page with ?maker -->
@@ -510,6 +557,18 @@ const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting
 document.querySelectorAll(".reveal").forEach(el => io.observe(el));
 const bar = document.getElementById("bar");
 addEventListener("scroll", () => bar.classList.toggle("show", scrollY > innerHeight * .6), { passive: true });
+const pages = [...document.querySelectorAll(".hero, section.s")], dotsEl = document.getElementById("dots");
+pages.forEach((pg, i) => {
+  const b = document.createElement("button"); b.setAttribute("aria-label", "Page " + (i + 1));
+  b.onclick = () => pg.scrollIntoView({ behavior: "smooth" }); dotsEl.appendChild(b);
+});
+const pageIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const i = pages.indexOf(e.target);
+  [...dotsEl.children].forEach((b, k) => b.classList.toggle("on", k === i));
+  document.body.classList.toggle("last", i === pages.length - 1);
+}), { threshold: .55 });
+pages.forEach(pg => pageIO.observe(pg));
 
 /* ---------- countdown ---------- */
 function setNum(el, v) {
