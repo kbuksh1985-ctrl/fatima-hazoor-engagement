@@ -536,20 +536,20 @@ function loop(now) {
 requestAnimationFrame(loop);
 
 const story = document.getElementById("story");
-let downAt = 0, holdTimer;
+let downAt = 0, holdTimer, pressed = false;
 story.addEventListener("pointerdown", e => {
   if (e.target.closest("a,button")) return;
-  downAt = performance.now(); holdTimer = setTimeout(() => { paused = true; }, 220);
+  pressed = true; downAt = performance.now(); holdTimer = setTimeout(() => { paused = true; }, 220);
 });
 story.addEventListener("pointerup", e => {
-  if (e.target.closest("a,button")) return;
-  clearTimeout(holdTimer);
+  if (!pressed || e.target.closest("a,button")) return;   // only a press that started on the story counts
+  pressed = false; clearTimeout(holdTimer);
   const wasHold = paused; paused = false;
   if (wasHold || !running) return;
   const r = story.getBoundingClientRect();
   if (e.clientX - r.left > r.width * .7) go(idx - 1); else go(idx + 1);   // RTL: right edge = back
 });
-story.addEventListener("pointercancel", () => { clearTimeout(holdTimer); paused = false; });
+story.addEventListener("pointercancel", () => { pressed = false; clearTimeout(holdTimer); paused = false; });
 addEventListener("keydown", e => {
   if (!running) return;
   if (e.key === "ArrowLeft" || e.key === " ") go(idx + 1);
