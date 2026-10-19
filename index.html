@@ -156,6 +156,9 @@ section.s{padding:64px 26px;text-align:center;position:relative}
 .dress i{width:34px;height:34px;border-radius:50%;box-shadow:0 3px 8px rgba(0,0,0,.15);border:2px solid #fff}
 
 /* closing */
+.route .v-name{font-family:var(--serif)}
+.stop{font-size:12.5px}
+.lantern-note{font-style:italic}
 .closing{background:linear-gradient(180deg,var(--blush),#e9c6d3);padding-bottom:120px}
 .closing .s-title{font-size:48px}
 .sign{font-family:var(--script);font-size:30px;color:var(--rose-deep);margin-top:18px}
@@ -212,6 +215,53 @@ section.s{padding:64px 26px;text-align:center;position:relative}
 .mk-row span{flex:1;font-size:16px}
 .mk-row a,.mk-row button{font-family:var(--serif);font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1px solid var(--rose-deep);background:#fff;color:var(--rose-deep);cursor:pointer;text-decoration:none}
 #confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:60}
+
+/* ---- Ajrak rings card ---- */
+.photo-card{background:#8e1b22}
+.ajrak{position:absolute;inset:0;width:100%;height:100%;display:block}
+.aj-cap{font-family:'Great Vibes',cursive;font-size:21px;fill:#7a1720}
+.aj-sub{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:1px;fill:#1d2557}
+.ring{stroke-dasharray:164;stroke-dashoffset:164}
+.reveal.in .ring{animation:draw 1.6s ease-out forwards}
+.reveal.in .r2{animation-delay:.7s}
+.gem{opacity:0;transform-origin:180px 84px}
+.reveal.in .gem{animation:gem .6s 2s ease-out forwards,twinkle 2.4s 2.6s ease-in-out infinite}
+.rings{transform-origin:165px 118px}
+.reveal.in .rings{animation:sway 5s 2.4s ease-in-out infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes gem{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+@keyframes twinkle{50%{filter:drop-shadow(0 0 6px #fff)}}
+@keyframes sway{50%{transform:rotate(-4deg)}}
+/* ---- route card ---- */
+.route{display:block;max-width:340px;margin:0 auto;background:var(--card);border-radius:16px;padding:16px 14px 12px;
+  box-shadow:0 10px 24px rgba(120,50,80,.12);text-decoration:none;color:var(--ink);border:1px solid #f0d3de}
+.route .v-name{font-size:22px;font-weight:700;margin-bottom:12px}
+.stops{position:relative;display:flex;justify-content:space-between;gap:4px;padding-top:4px}
+.stops::before{content:"";position:absolute;top:22px;right:12%;left:12%;border-top:2px dashed var(--rose)}
+.stop{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;font-size:13px;line-height:1.4;color:var(--muted)}
+.stop span{width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid var(--rose);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:4px;z-index:1}
+.stop.end{color:var(--rose-deep);font-weight:700}
+.stop.end span{background:var(--rose-deep);border-color:var(--rose-deep);box-shadow:0 0 0 5px rgba(156,88,116,.18);animation:pulse 2s ease-in-out infinite}
+.car{position:absolute;top:2px;left:12%;font-size:16px;font-style:normal;z-index:2;transform:scaleX(-1)}
+.reveal.in .car{animation:drive 4.5s ease-in-out .6s infinite}
+@keyframes drive{0%{left:12%;opacity:0}8%{opacity:1}85%{left:80%;opacity:1}100%{left:80%;opacity:0}}
+.route-hint{margin-top:10px;font-size:13px;color:var(--rose-deep);font-weight:600}
+/* ---- prayer lantern ---- */
+.lantern-wrap{margin-top:clamp(14px,3.5svh,36px)}
+.lantern{display:block;margin:4px auto 0;width:64px;height:84px;border:0;background:none;cursor:pointer;padding:0;
+  filter:drop-shadow(0 0 14px rgba(246,183,74,.75));animation:float 3s ease-in-out infinite}
+.lantern svg{width:100%;height:100%}
+.lantern:active{transform:scale(.94)}
+@keyframes float{50%{transform:translateY(-6px)}}
+.lantern-note{font-size:14px;color:var(--muted);margin-top:6px;min-height:2.6em;line-height:1.7}
+.lantern-note.bless{color:var(--rose-deep);font-weight:600;font-size:15px}
+.fly{position:fixed;z-index:65;width:44px;height:58px;pointer-events:none;filter:drop-shadow(0 0 12px rgba(246,183,74,.9));
+  animation:flyup 5s cubic-bezier(.3,.1,.4,1) forwards}
+.fly svg{width:100%;height:100%}
+@keyframes flyup{0%{transform:translate(0,0) scale(1);opacity:1}30%{transform:translate(var(--sx1),-30vh) scale(.85)}
+  70%{transform:translate(var(--sx2),-70vh) scale(.6);opacity:.9}100%{transform:translate(var(--sx1),-105vh) scale(.4);opacity:0}}
+@media (max-height:720px){.route .v-name{margin-bottom:8px}.stop span{width:34px;height:34px;font-size:16px}.lantern{width:54px;height:70px}}
+@media (prefers-reduced-motion:reduce){.ring{stroke-dashoffset:0}.reveal.in .car,.lantern{animation:none}}
 
 /* ============ ONE SCREEN PER PAGE (phone fit) ============ */
 html{scroll-snap-type:y mandatory}
@@ -326,8 +376,37 @@ body.opened .dots{display:flex}
   <section class="s" style="background:#f8e9ef">
     <div class="reveal tilt">
       <div class="photo-card" id="photoCard">
-        <div class="mono"><b data-f="initialsLong"></b><i>Forever begins</i></div>
-        <svg class="ring-svg" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="40" r="17" stroke="#f1d895" stroke-width="4"/><path d="M24 14l8-8 8 8-8 9z" fill="#fff" stroke="#f1d895" stroke-width="2"/></svg>
+        <svg class="ajrak" viewBox="0 0 330 264" preserveAspectRatio="xMidYMid slice" aria-label="Two gold rings on Ajrak">
+          <defs>
+            <pattern id="aj" width="44" height="44" patternUnits="userSpaceOnUse">
+              <rect width="44" height="44" fill="#8e1b22"/>
+              <polygon points="22,3 41,22 22,41 3,22" fill="#1d2557"/>
+              <polygon points="22,10 34,22 22,34 10,22" fill="#8e1b22"/>
+              <circle cx="22" cy="22" r="5" fill="#f4ead6"/>
+              <circle cx="22" cy="22" r="2" fill="#1d2557"/>
+              <circle cx="0" cy="0" r="3" fill="#f4ead6"/><circle cx="44" cy="0" r="3" fill="#f4ead6"/>
+              <circle cx="0" cy="44" r="3" fill="#f4ead6"/><circle cx="44" cy="44" r="3" fill="#f4ead6"/>
+              <circle cx="22" cy="0" r="1.6" fill="#f4ead6"/><circle cx="22" cy="44" r="1.6" fill="#f4ead6"/>
+              <circle cx="0" cy="22" r="1.6" fill="#f4ead6"/><circle cx="44" cy="22" r="1.6" fill="#f4ead6"/>
+            </pattern>
+            <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fbe7a6"/><stop offset=".5" stop-color="#d4a73c"/><stop offset="1" stop-color="#8a6416"/>
+            </linearGradient>
+            <radialGradient id="glow"><stop offset="0" stop-color="#fff7e6"/><stop offset="1" stop-color="#f6e6c8"/></radialGradient>
+          </defs>
+          <rect width="330" height="264" fill="url(#aj)"/>
+          <rect x="10" y="10" width="310" height="244" rx="8" fill="none" stroke="#e8cf8a" stroke-width="1.5" stroke-dasharray="2 4"/>
+          <circle cx="165" cy="132" r="92" fill="#1d2557" opacity=".55"/>
+          <circle cx="165" cy="132" r="84" fill="url(#glow)" stroke="url(#gold)" stroke-width="3"/>
+          <circle cx="165" cy="132" r="76" fill="none" stroke="#d4a73c" stroke-width=".8" stroke-dasharray="1 5"/>
+          <g class="rings">
+            <circle class="ring r1" cx="150" cy="118" r="26" fill="none" stroke="url(#gold)" stroke-width="6"/>
+            <circle class="ring r2" cx="180" cy="118" r="26" fill="none" stroke="url(#gold)" stroke-width="6"/>
+            <path class="gem" d="M172 84 l8 -9 l8 9 l-8 9 z" fill="#ffffff" stroke="#d4a73c" stroke-width="1.5"/>
+          </g>
+          <text x="165" y="176" text-anchor="middle" class="aj-cap">Two hearts, one promise</text>
+          <text x="165" y="198" text-anchor="middle" class="aj-sub">A new journey begins</text>
+        </svg>
         <div class="glare"></div>
       </div>
     </div>
@@ -356,20 +435,26 @@ body.opened .dots{display:flex}
   <section class="s" style="background:#f8e9ef">
     <div class="reveal">
       <div class="s-title">Venue</div>
-      <div class="ornament">✦</div>
-      <div class="venue-card">
+      <a class="route" id="mapBtn" target="_blank" rel="noopener">
         <div class="v-name" data-f="venueName"></div>
-        <div class="v-addr" data-f="venueAddress"></div>
-        <div class="btns">
-          <a class="btn solid" id="mapBtn" target="_blank" rel="noopener">📍 Open in Maps</a>
-          <a class="btn" id="calBtn" target="_blank" rel="noopener">📅 Save the Date</a>
+        <div class="stops">
+          <div class="stop"><span>🏙️</span>Dadu</div>
+          <div class="stop"><span>🛣️</span>Moro Road</div>
+          <div class="stop"><span>🏨</span>Maskeen Hotel</div>
+          <div class="stop end"><span>🏡</span>Our venue</div>
+          <i class="car">🚗</i>
         </div>
-      </div>
+        <div class="route-hint">Tap for directions 📍</div>
+      </a>
     </div>
-    <div class="reveal" style="margin-top:44px">
-      <div class="s-title" style="font-size:38px">Dress Code</div>
-      <p class="verse" data-f="dressCode" style="font-style:normal"></p>
-      <div class="dress" id="dress"></div>
+    <div class="reveal lantern-wrap">
+      <div class="s-title" style="font-size:34px">Light a Dua Lantern</div>
+      <button class="lantern" id="lantern" type="button" aria-label="Send a dua">
+        <svg viewBox="0 0 60 80" aria-hidden="true"><defs><radialGradient id="lg" cx=".5" cy=".6" r=".6"><stop offset="0" stop-color="#fff3c4"/><stop offset=".5" stop-color="#f6b74a"/><stop offset="1" stop-color="#d0642c"/></radialGradient></defs>
+          <path d="M14 10 Q30 2 46 10 L52 58 Q30 68 8 58 Z" fill="url(#lg)"/><path d="M8 58 Q30 68 52 58 L48 64 Q30 72 12 64 Z" fill="#a8461f"/>
+          <path d="M30 6 V64 M19 9 L14 60 M41 9 L46 60" stroke="#c4612b" stroke-width=".8" opacity=".5"/><ellipse cx="30" cy="68" rx="5" ry="3" fill="#ffd36b"/></svg>
+      </button>
+      <p class="lantern-note" id="lanternNote">Tap the lantern to send a dua up to the sky for the couple</p>
     </div>
   </section>
 
@@ -472,7 +557,7 @@ if (CONFIG.photo) document.getElementById("photoCard").innerHTML = `<img src="${
 
 document.getElementById("timeline").innerHTML = CONFIG.events.map(e =>
   `<div class="t-item reveal"><div class="t-time">${e.time}</div><div class="t-title">${e.title}</div><div class="t-note">${e.note}</div></div>`).join("");
-document.getElementById("dress").innerHTML = CONFIG.dressColors.map(c => `<i style="background:${c}"></i>`).join("");
+
 
 const mapUrl = CONFIG.mapLink || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(CONFIG.venueName + ", " + CONFIG.venueAddress);
 const waUrl = text => `https://wa.me/${CONFIG.rsvpWhatsApp}?text=${encodeURIComponent(text)}`;
@@ -492,7 +577,26 @@ const calUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text
   "&dates=" + gcal(d) + "/" + gcal(new Date(d.getTime() + 3 * 3600e3)) + "&location=" + encodeURIComponent(CONFIG.venueName + ", " + CONFIG.venueAddress);
 mapBtn.href = barMap.href = mapUrl;
 barRsvp.href = "#rsvp"; barRsvp.removeAttribute("target");
-calBtn.href = calUrl;
+
+
+/* ---------- prayer lantern ---------- */
+const BLESSINGS = [
+  "May Allah keep the couple blessed, always 🤲",
+  "Mubarak on the beautiful journey ahead 💐",
+  "May love and harmony stay with you forever 💞",
+  "May your home be full of joy and barakah 🏡",
+  "May both families be blessed with happiness ✨"
+];
+let prayers = 0;
+document.getElementById("lantern").addEventListener("click", e => {
+  const btn = e.currentTarget, r = btn.getBoundingClientRect();
+  const f = document.createElement("div"); f.className = "fly"; f.innerHTML = btn.innerHTML;
+  f.style.left = (r.left + r.width / 2 - 22) + "px"; f.style.top = (r.top + 6) + "px";
+  f.style.setProperty("--sx1", (Math.random() * 60 - 30) + "px"); f.style.setProperty("--sx2", (Math.random() * 80 - 40) + "px");
+  document.body.appendChild(f); setTimeout(() => f.remove(), 5200);
+  const note = document.getElementById("lanternNote");
+  note.textContent = BLESSINGS[prayers++ % BLESSINGS.length]; note.classList.add("bless");
+});
 
 /* ---------- confetti ---------- */
 const cv = document.getElementById("confetti"), cx = cv.getContext("2d");
