@@ -266,7 +266,7 @@ body.opened .dots{display:flex}
 /* ---- Ajrak rings card ---- */
 .photo-card{background:#8e1b22}
 .ajrak{position:absolute;inset:0;width:100%;height:100%;display:block}
-.aj-cap{font-family:'Aref Ruqaa','Lateef',serif;font-size:21px;font-weight:700;fill:#7a1720}
+.aj-cap{font-family:'Lateef','Noto Naskh Arabic',serif;font-size:25px;font-weight:700;fill:#7a1720}
 .aj-sub{font-family:'Lateef',serif;font-size:15px;fill:#1d2557}
 .ring{stroke-dasharray:164;stroke-dashoffset:164}
 .reveal.in .ring{animation:draw 1.6s ease-out forwards}
@@ -311,6 +311,8 @@ body.opened .dots{display:flex}
 @media (prefers-reduced-motion:reduce){.ring{stroke-dashoffset:0}.reveal.in .car,.lantern{animation:none}}
 
 /* ============ SINDHI / RTL ============ */
+/* Aref Ruqaa has no Sindhi letters (ٻ ڪ ۽ …): keep it for the two names only */
+.amp,.letter .l-names,.seal{font-family:var(--script) !important;font-weight:700}
 *{letter-spacing:0 !important;text-transform:none !important}
 body{font-family:var(--serif)}
 .name,.amp,.seal,.letter .l-names,.photo-card .mono b{font-family:var(--ruqaa)}
@@ -325,7 +327,7 @@ body{font-family:var(--serif)}
 .hero .invite{line-height:1.75;margin:12px auto 6px}
 .bismillah{margin-bottom:8px}
 @media (max-height:720px){.hero .lead,.hero .invite{font-size:13.5px}.heart-ico{margin-bottom:4px}}
-.dear b{font-family:var(--ruqaa);font-size:30px}
+.dear b{font-family:var(--script);font-weight:700;font-size:30px}
 .seal{font-size:22px}
 .letter .l-names{font-size:32px}
 .photo-card .mono b{font-size:64px}
@@ -337,6 +339,9 @@ body{font-family:var(--serif)}
 .rsvp{text-align:right}
 .mk-row span{text-align:right}
 .typed::after{margin-left:0;margin-right:1px}
+.closing-heart{color:var(--rose-deep);font-size:22px;margin:14px 0 4px}
+.closing-line{font-size:17px;color:var(--ink);line-height:1.8}
+.sign{margin-top:18px}
 </style>
 </head>
 <body class="locked">
@@ -487,23 +492,8 @@ body{font-family:var(--serif)}
   <section class="s closing">
     <div class="reveal">
       <div class="s-title">اوهان جي اچڻ جو انتظار رهندو</div>
-      <form class="rsvp" id="rsvp" novalidate>
-        <label for="rName">اوهان جو نالو</label>
-        <input id="rName" autocomplete="name" placeholder="مثال: علي ۽ ڪٽنب">
-        <div class="err" id="rErr">مهرباني ڪري پنهنجو نالو لکو</div>
-        <label>ڇا اوهان تشريف آڻيندا؟</label>
-        <div class="chips" id="rAttend">
-          <button type="button" class="chip sel" data-v="yes">ها، ان شاءَ الله</button>
-          <button type="button" class="chip" data-v="no">معذرت</button>
-        </div>
-        <div id="rGuestWrap" class="guest-row">
-          <label>ڪيترا ماڻهو</label>
-          <div class="stepper"><button type="button" id="rMinus" aria-label="گهٽ مهمان">−</button><b id="rCount">1</b><button type="button" id="rPlus" aria-label="وڌيڪ مهمان">+</button></div>
-        </div>
-        <label for="rMsg">جوڙي لاءِ دعائون ۽ مبارڪون</label>
-        <textarea id="rMsg" rows="2" placeholder="مبارڪون هجن! الله سائين اوهان ٻنهي جي جوڙي سلامت رکي…"></textarea>
-        <a class="btn solid" id="rSend" target="_blank" rel="noopener">💌 واٽس ايپ تي جواب موڪليو</a>
-      </form>
+      <div class="heart-ico closing-heart">♥</div>
+      <p class="closing-line">اوهان جي شرڪت ۽ دعائن جا طلبگار</p>
       <div class="sign" data-f="hosts"></div>
     </div>
   </section>
@@ -527,7 +517,6 @@ body{font-family:var(--serif)}
 
 <div class="bar" id="bar">
   <a class="pill" id="barMap" target="_blank" rel="noopener">📍 مقام</a>
-  <a class="pill solid" id="barRsvp" target="_blank" rel="noopener">جواب</a>
 </div>
 
 <script>
@@ -601,14 +590,12 @@ if (guest) {
   document.getElementById("envHint").textContent = `محترم ${guest}، اوهان لاءِ هڪ خاص دعوت نامو 💌`;
   document.getElementById("dearName").textContent = guest;
   document.getElementById("dear").style.display = "block";
-  document.getElementById("rName").value = guest;
 }
 const z = n => String(n).padStart(2, "0");
 const gcal = dt => dt.getUTCFullYear() + z(dt.getUTCMonth() + 1) + z(dt.getUTCDate()) + "T" + z(dt.getUTCHours()) + z(dt.getUTCMinutes()) + "00Z";
 const calUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(`مڱڻي · ${CONFIG.bride} ۽ ${CONFIG.groom}`) +
   "&dates=" + gcal(d) + "/" + gcal(new Date(d.getTime() + 3 * 3600e3)) + "&location=" + encodeURIComponent(CONFIG.mapQuery);
 mapBtn.href = barMap.href = mapUrl;
-barRsvp.href = "#rsvp"; barRsvp.removeAttribute("target");
 
 
 /* ---------- prayer lantern ---------- */
@@ -850,39 +837,6 @@ addEventListener("scroll", () => {
 
 /* ---------- toast ---------- */
 function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 2200); }
-
-/* ---------- RSVP form → WhatsApp ---------- */
-let attend = "yes", guests = 1;
-document.querySelectorAll("#rAttend .chip").forEach(c => c.addEventListener("click", () => {
-  document.querySelectorAll("#rAttend .chip").forEach(x => x.classList.toggle("sel", x === c));
-  attend = c.dataset.v; document.getElementById("rGuestWrap").style.display = attend === "yes" ? "" : "none";
-}));
-rMinus.addEventListener("click", () => { guests = Math.max(1, guests - 1); rCount.textContent = guests; });
-rPlus.addEventListener("click", () => { guests = Math.min(20, guests + 1); rCount.textContent = guests; });
-function rsvpText() {
-  const name = rName.value.trim();
-  const lines = [
-    "السلام عليڪم! 💐",
-    `${CONFIG.bride} ۽ ${CONFIG.groom} جي مڱڻي جي دعوت (${F.longDate})`,
-    "",
-    `نالو: ${name || "—"}`,
-    `شرڪت: ${attend === "yes" ? "ها، ان شاءَ الله ✅" : "معذرت، اچي نه سگهندس ❌"}`
-  ];
-  if (attend === "yes") lines.push(`ماڻهو: ${guests}`);
-  if (rMsg.value.trim()) lines.push("", `دعا: ${rMsg.value.trim()}`);
-  return lines.join("\n");
-}
-function updateRsvp() { rSend.href = waUrl(rsvpText()); }
-["input", "click"].forEach(t => document.getElementById("rsvp").addEventListener(t, () => setTimeout(updateRsvp)));
-document.getElementById("rsvp").addEventListener("submit", e => e.preventDefault());
-updateRsvp();
-rSend.addEventListener("click", e => {
-  const ok = !!rName.value.trim();
-  rErr.style.display = ok ? "none" : "block";
-  if (!ok) { e.preventDefault(); rName.focus(); return; }
-  updateRsvp();
-  if (attend === "yes") { const r = rSend.getBoundingClientRect(); burst(r.left + r.width / 2, r.top, 90); }
-});
 
 /* ---------- share ---------- */
 document.getElementById("shareBtn").addEventListener("click", async () => {

@@ -312,6 +312,9 @@ body.opened .dots{display:flex}
   .verse{font-size:13.5px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.closing-heart{color:var(--rose-deep);font-size:22px;margin:14px 0 4px}
+.closing-line{font-size:17px;color:var(--ink);line-height:1.8}
+.sign{margin-top:18px}
 </style>
 </head>
 <body class="locked">
@@ -462,23 +465,8 @@ body.opened .dots{display:flex}
   <section class="s closing">
     <div class="reveal">
       <div class="s-title">We can't wait to celebrate with you</div>
-      <form class="rsvp" id="rsvp" novalidate>
-        <label for="rName">Your name</label>
-        <input id="rName" autocomplete="name" placeholder="e.g. Ali & Family">
-        <div class="err" id="rErr">Please write your name</div>
-        <label>Will you attend?</label>
-        <div class="chips" id="rAttend">
-          <button type="button" class="chip sel" data-v="yes">Yes, InshaAllah</button>
-          <button type="button" class="chip" data-v="no">Sorry, can't</button>
-        </div>
-        <div id="rGuestWrap" class="guest-row">
-          <label>Guests</label>
-          <div class="stepper"><button type="button" id="rMinus" aria-label="Fewer guests">−</button><b id="rCount">1</b><button type="button" id="rPlus" aria-label="More guests">+</button></div>
-        </div>
-        <label for="rMsg">Wishes & duas for the couple</label>
-        <textarea id="rMsg" rows="2" placeholder="Mubarak ho! May Allah bless you both…"></textarea>
-        <a class="btn solid" id="rSend" target="_blank" rel="noopener">💌 Send RSVP on WhatsApp</a>
-      </form>
+      <div class="heart-ico closing-heart">♥</div>
+      <p class="closing-line">Looking forward to your presence and duas</p>
       <div class="sign" data-f="hosts"></div>
     </div>
   </section>
@@ -502,7 +490,6 @@ body.opened .dots{display:flex}
 
 <div class="bar" id="bar">
   <a class="pill" id="barMap" target="_blank" rel="noopener">📍 Location</a>
-  <a class="pill solid" id="barRsvp" target="_blank" rel="noopener">RSVP</a>
 </div>
 
 <script>
@@ -569,14 +556,12 @@ if (guest) {
   document.getElementById("envHint").textContent = `Dear ${guest}, you have received a special invitation 💌`;
   document.getElementById("dearName").textContent = guest;
   document.getElementById("dear").style.display = "block";
-  document.getElementById("rName").value = guest;
 }
 const z = n => String(n).padStart(2, "0");
 const gcal = dt => dt.getUTCFullYear() + z(dt.getUTCMonth() + 1) + z(dt.getUTCDate()) + "T" + z(dt.getUTCHours()) + z(dt.getUTCMinutes()) + "00Z";
 const calUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(`Engagement · ${CONFIG.bride} & ${CONFIG.groom}`) +
   "&dates=" + gcal(d) + "/" + gcal(new Date(d.getTime() + 3 * 3600e3)) + "&location=" + encodeURIComponent(CONFIG.venueName + ", " + CONFIG.venueAddress);
 mapBtn.href = barMap.href = mapUrl;
-barRsvp.href = "#rsvp"; barRsvp.removeAttribute("target");
 
 
 /* ---------- prayer lantern ---------- */
@@ -818,39 +803,6 @@ addEventListener("scroll", () => {
 
 /* ---------- toast ---------- */
 function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 2200); }
-
-/* ---------- RSVP form → WhatsApp ---------- */
-let attend = "yes", guests = 1;
-document.querySelectorAll("#rAttend .chip").forEach(c => c.addEventListener("click", () => {
-  document.querySelectorAll("#rAttend .chip").forEach(x => x.classList.toggle("sel", x === c));
-  attend = c.dataset.v; document.getElementById("rGuestWrap").style.display = attend === "yes" ? "" : "none";
-}));
-rMinus.addEventListener("click", () => { guests = Math.max(1, guests - 1); rCount.textContent = guests; });
-rPlus.addEventListener("click", () => { guests = Math.min(20, guests + 1); rCount.textContent = guests; });
-function rsvpText() {
-  const name = rName.value.trim();
-  const lines = [
-    "Assalam o Alaikum! 💐",
-    `RSVP · Engagement of ${CONFIG.bride} & ${CONFIG.groom} (${F.longDate})`,
-    "",
-    `Name: ${name || "—"}`,
-    `Attending: ${attend === "yes" ? "Yes, InshaAllah ✅" : "Sorry, can't make it ❌"}`
-  ];
-  if (attend === "yes") lines.push(`Guests: ${guests}`);
-  if (rMsg.value.trim()) lines.push("", `Wishes: ${rMsg.value.trim()}`);
-  return lines.join("\n");
-}
-function updateRsvp() { rSend.href = waUrl(rsvpText()); }
-["input", "click"].forEach(t => document.getElementById("rsvp").addEventListener(t, () => setTimeout(updateRsvp)));
-document.getElementById("rsvp").addEventListener("submit", e => e.preventDefault());
-updateRsvp();
-rSend.addEventListener("click", e => {
-  const ok = !!rName.value.trim();
-  rErr.style.display = ok ? "none" : "block";
-  if (!ok) { e.preventDefault(); rName.focus(); return; }
-  updateRsvp();
-  if (attend === "yes") { const r = rSend.getBoundingClientRect(); burst(r.left + r.width / 2, r.top, 90); }
-});
 
 /* ---------- share ---------- */
 document.getElementById("shareBtn").addEventListener("click", async () => {
