@@ -315,6 +315,40 @@ body.opened .dots{display:flex}
 .closing-heart{color:var(--rose-deep);font-size:22px;margin:14px 0 4px}
 .closing-line{font-size:17px;color:var(--ink);line-height:1.8}
 .sign{margin-top:18px}
+/* ---------- finale ---------- */
+.finale{position:relative;overflow:hidden;color:#f6e9ee;padding-bottom:clamp(22px,5svh,56px);
+  background:radial-gradient(ellipse at 50% 18%,#4b3b6b 0%,#2d2347 48%,#1d1428 100%)}
+#sky{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.moon{position:absolute;top:9%;left:12%;width:62px;height:62px;z-index:1;opacity:0;transform:scale(.6) rotate(-20deg);
+  filter:drop-shadow(0 0 16px rgba(246,221,156,.75));transition:opacity 1.4s ease,transform 1.4s ease}
+.finale.on .moon{opacity:1;transform:none}
+.sky-lanterns{position:absolute;inset:0;pointer-events:none;z-index:1}
+.sl{position:absolute;bottom:-40px;width:14px;height:19px;border-radius:42% 42% 30% 30%;
+  background:radial-gradient(circle at 50% 72%,#fff3c4,#f6b74a 50%,#d0642c);box-shadow:0 0 14px 4px rgba(246,183,74,.5);
+  animation:slrise linear infinite;opacity:0}
+@keyframes slrise{0%{transform:translate(0,0) scale(1);opacity:0}10%{opacity:.95}
+  100%{transform:translate(var(--dx),-115vh) scale(.45);opacity:0}}
+.finale-inner{position:relative;z-index:2}
+.finale-inner > *{opacity:0;transform:translateY(18px)}
+.finale.on .finale-inner > *{animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
+.finale.on .finale-inner > :nth-child(2){animation-delay:.35s}
+.finale.on .finale-inner > :nth-child(3){animation-delay:.9s}
+.finale.on .finale-inner > :nth-child(4){animation-delay:1.4s}
+.finale.on .finale-inner > :nth-child(5){animation-delay:1.8s}
+.finale.on .finale-inner > :nth-child(6){animation-delay:2.3s}
+@keyframes rise{to{opacity:1;transform:none}}
+.f-line{font-size:18px;opacity:.85}
+.f-big{font-family:var(--script);font-weight:700;font-size:clamp(38px,6.6svh,54px);line-height:1.25;color:#f6dd9c;
+  text-shadow:0 0 22px rgba(246,221,156,.35)}
+.f-names{margin-top:clamp(12px,3svh,26px);font-size:clamp(30px,5svh,40px);color:#fff;line-height:1.4}
+.f-names span{font-family:var(--script)}
+.f-names i{font-style:normal;font-family:var(--script);color:#f6dd9c;font-size:.8em;margin:0 4px}
+.f-date{font-size:14px;color:#f6dd9c;opacity:.9;margin-top:6px}
+.f-sign{font-size:15px;opacity:.85;margin-top:clamp(10px,2.4svh,20px)}
+.replay{margin-top:clamp(14px,3svh,26px);background:rgba(255,255,255,.06);border:1px solid rgba(246,221,156,.55);color:#f6dd9c;
+  border-radius:24px;padding:9px 20px;font-family:var(--serif);font-size:15px;cursor:pointer}
+.replay:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.sl{display:none}.finale-inner > *{opacity:1;transform:none}}
 </style>
 </head>
 <body class="locked">
@@ -462,12 +496,18 @@ body.opened .dots{display:flex}
   </section>
 
   <!-- CLOSING -->
-  <section class="s closing">
-    <div class="reveal">
-      <div class="s-title">We can't wait to celebrate with you</div>
-      <div class="heart-ico closing-heart">♥</div>
-      <p class="closing-line">Looking forward to your presence and duas</p>
-      <div class="sign" data-f="hosts"></div>
+  <section class="s closing finale" id="finale">
+    <canvas id="sky"></canvas>
+    <svg class="moon" viewBox="0 0 64 64" aria-hidden="true"><defs><mask id="cres"><rect width="64" height="64" fill="#fff"/><circle cx="43" cy="25" r="22" fill="#000"/></mask></defs>
+      <circle cx="30" cy="34" r="25" fill="#f6dd9c" mask="url(#cres)"/><path d="M50 40 l2 5 5 .5 -4 3.5 1.2 5 -4.2 -2.7 -4.2 2.7 1.2 -5 -4 -3.5 5 -.5z" fill="#f6dd9c"/></svg>
+    <div class="sky-lanterns" id="skyLanterns"></div>
+    <div class="reveal finale-inner">
+      <div class="f-line">We can't wait</div>
+      <div class="f-big">to celebrate with you</div>
+      <div class="f-names"><span>Fatima</span> <i>&amp;</i> <span>Hazoor Bux</span></div>
+      <div class="f-date" data-f="longDate"></div>
+      <div class="f-sign" data-f="hosts"></div>
+      <button class="replay" type="button" id="replay">↺ Open the invitation again</button>
     </div>
   </section>
 </div>
@@ -510,7 +550,8 @@ const CONFIG = {
   dressColors: ["#f3c6d3", "#e8cf8a", "#d9c2e8", "#fffafc"],
   rsvpWhatsApp: "",                         // e.g. "923001234567" (country code, no +). "" lets guest pick a contact
   hosts: "With love, both families",
-  showHijri: true,                          // Islamic date under the scratch-card date (calculated, may differ ±1 day from moon sighting)
+  showHijri: true,                          // Islamic date under the scratch-card date
+  hijriDate: "11 Jumada al-Awwal 1448 AH",
   music: true,                              // soft music-box tune after the envelope opens
   leadText: "With the blessings of Allah and our families, we joyfully invite you to celebrate the engagement of",
   events: [
@@ -534,9 +575,7 @@ const F = {
   yearTime: fmt({ year: "numeric" }) + " · " + fmt({ hour: "numeric", minute: "2-digit", hour12: true }).toUpperCase(),
   hijri: ""
 };
-if (CONFIG.showHijri) {
-  try { F.hijri = d.toLocaleDateString("en-GB-u-ca-islamic-umalqura", { day: "numeric", month: "long", year: "numeric" }).replace(/\s?AH$/, "") + " AH"; } catch (e) {}
-}
+if (CONFIG.showHijri) F.hijri = CONFIG.hijriDate;
 document.querySelectorAll("[data-f]").forEach(el => el.textContent = F[el.dataset.f]);
 document.title = `${CONFIG.bride} & ${CONFIG.groom} · Engagement`;
 
@@ -581,6 +620,56 @@ document.getElementById("lantern").addEventListener("click", e => {
   document.body.appendChild(f); setTimeout(() => f.remove(), 5200);
   const note = document.getElementById("lanternNote");
   note.textContent = BLESSINGS[prayers++ % BLESSINGS.length]; note.classList.add("bless");
+});
+
+/* ---------- finale: stars, moon, lanterns, replay ---------- */
+const finale = document.getElementById("finale"), sky = document.getElementById("sky"), skx = sky.getContext("2d");
+let stars = [], shoot = null, skyOn = false, finaleBurst = false;
+function sizeSky() {
+  const r = finale.getBoundingClientRect(), dpr = devicePixelRatio || 1;
+  sky.width = r.width * dpr; sky.height = r.height * dpr; skx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  stars = Array.from({ length: 90 }, () => ({ x: Math.random() * r.width, y: Math.random() * r.height * .8, r: Math.random() * 1.3 + .3, p: Math.random() * 6.3, s: .6 + Math.random() * 1.6 }));
+}
+function drawSky(t) {
+  if (!skyOn) return;
+  const w = sky.width / (devicePixelRatio || 1), h = sky.height / (devicePixelRatio || 1);
+  skx.clearRect(0, 0, w, h);
+  stars.forEach(st => { skx.globalAlpha = .35 + .65 * Math.abs(Math.sin(st.p + t / 1000 * st.s)); skx.fillStyle = "#fff8e7";
+    skx.beginPath(); skx.arc(st.x, st.y, st.r, 0, 7); skx.fill(); });
+  if (!shoot && Math.random() < .006) shoot = { x: w * (.3 + Math.random() * .6), y: h * Math.random() * .3, l: 0 };
+  if (shoot) {
+    shoot.l += 9; const x2 = shoot.x - shoot.l, y2 = shoot.y + shoot.l * .45;
+    const g = skx.createLinearGradient(x2 + 70, y2 - 32, x2, y2); g.addColorStop(0, "rgba(255,248,231,0)"); g.addColorStop(1, "rgba(255,248,231,.9)");
+    skx.globalAlpha = 1; skx.strokeStyle = g; skx.lineWidth = 1.6; skx.beginPath(); skx.moveTo(x2 + 70, y2 - 32); skx.lineTo(x2, y2); skx.stroke();
+    if (shoot.l > w * .7) shoot = null;
+  }
+  skx.globalAlpha = 1; requestAnimationFrame(drawSky);
+}
+const lanternsBox = document.getElementById("skyLanterns");
+for (let i = 0; i < 9; i++) {
+  const l = document.createElement("i"); l.className = "sl";
+  l.style.left = (6 + Math.random() * 88) + "%";
+  l.style.setProperty("--dx", (Math.random() * 70 - 35) + "px");
+  l.style.animationDuration = (9 + Math.random() * 7) + "s";
+  l.style.animationDelay = (-Math.random() * 14) + "s";
+  l.style.transform = `scale(${.6 + Math.random() * .7})`;
+  lanternsBox.appendChild(l);
+}
+new IntersectionObserver(es => es.forEach(e => {
+  skyOn = e.isIntersecting;
+  if (skyOn) {
+    finale.classList.add("on"); sizeSky(); requestAnimationFrame(drawSky);
+    if (!finaleBurst) { finaleBurst = true; setTimeout(() => burst(innerWidth / 2, innerHeight * .45, 100), 1100); }
+  }
+}), { threshold: .5 }).observe(finale);
+addEventListener("resize", () => { if (skyOn) sizeSky(); });
+document.getElementById("replay").addEventListener("click", () => {
+  if (typeof stopMusic === "function") stopMusic();
+  opened = false; env.classList.remove("open");
+  document.body.classList.remove("opened"); document.body.classList.add("locked");
+  document.getElementById("envelope-screen").classList.remove("gone");
+  document.documentElement.style.scrollBehavior = "auto"; scrollTo(0, 0); document.documentElement.style.scrollBehavior = "";
+  finale.classList.remove("on"); finaleBurst = false;
 });
 
 /* ---------- confetti ---------- */
